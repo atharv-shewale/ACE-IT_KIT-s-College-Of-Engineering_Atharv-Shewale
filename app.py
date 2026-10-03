@@ -474,7 +474,7 @@ def render_user_tab(
     # Timeline chart
     st.subheader("Choice timeline")
     st.plotly_chart(
-        timeline_chart(events_df, user_id),
+        timeline_chart(events_df, reversals_df, user_id),
         use_container_width=True,
         key=f"timeline_{user_id}",
     )

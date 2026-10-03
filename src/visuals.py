@@ -47,8 +47,8 @@ _STAGE_INDEX: dict[str, int] = {s: i for i, s in enumerate(STAGE_ORDER)}
 
 def timeline_chart(
     events_df: pd.DataFrame,
-    reversals_df: pd.DataFrame,
-    user_id: str,
+    reversals_df: pd.DataFrame | str | None = None,
+    user_id: str | None = None,
 ) -> go.Figure:
     """
     Plot a user's choice history over time, one line per decision.
@@ -60,13 +60,15 @@ def timeline_chart(
     Parameters
     ----------
     events_df    : clean output of loader.load()
-    reversals_df : output of detector.detect()
+    reversals_df : output of detector.detect() (or user_id if passed as 2nd arg)
     user_id      : str – user to visualise
-
-    Returns
-    -------
-    go.Figure
     """
+    if isinstance(reversals_df, str) and user_id is None:
+        user_id = reversals_df
+        reversals_df = pd.DataFrame()
+    elif reversals_df is None:
+        reversals_df = pd.DataFrame()
+
     # ── Filter to the target user ──────────────────────────────────────────
     u_events = (
         events_df[events_df["user_id"] == user_id]
